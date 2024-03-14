@@ -1,0 +1,18 @@
+ARG ANDROID_SDK_VERSION
+FROM alvrme/alpine-android:android-${ANDROID_SDK_VERSION}-jdk17
+
+USER root
+
+ARG FLUTTER_VERSION
+ARG SHOREBIRD_TOKEN
+
+ENV XDG_CONFIG_HOME "/opt"
+ENV SHOREBIRD_HOME="$XDG_CONFIG_HOME/shorebird"
+ENV PATH="${SHOREBIRD_HOME}/bin:${PATH}"
+ENV SHOREBIRD_TOKEN=$SHOREBIRD_TOKEN
+
+RUN apk add --update --no-cache curl
+
+RUN curl --proto '=https' --tlsv1.2 https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh -sSf | bash -s -- --force && \
+    shorebird flutter versions use $FLUTTER_VERSION && \
+    shorebird doctor
